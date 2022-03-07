@@ -6,17 +6,17 @@
 #    By: lcorinna <lcorinna@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/04 15:53:16 by lcorinna          #+#    #+#              #
-#    Updated: 2022/03/04 19:03:43 by lcorinna         ###   ########.fr        #
+#    Updated: 2022/03/07 16:47:30 by lcorinna         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME_PHILO = philosophers
 
-PHILO = philosophers.c libft_ph.c
+PHILO = philosophers.c philosophers_utils.c activity.c libft_ph.c
 
 OBJ_PHILO = $(PHILO:.c=.o)
 
-CFLAGS = -Wall -Wextra -Werror -ptfread -fsanitize=address -g 
+CFLAGS = #-Wall -Wextra -Werror -pthread -g -fsanitize=address
 #Leaks --atExit -- ./philosophers 3 200 400 400 5
 
 all: $(NAME_PHILO)
