@@ -6,32 +6,32 @@
 /*   By: lcorinna <lcorinna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 14:04:29 by lcorinna          #+#    #+#             */
-/*   Updated: 2022/03/07 18:52:08 by lcorinna         ###   ########.fr       */
+/*   Updated: 2022/03/08 19:15:23 by lcorinna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	ft_my_uslep(t_data *data)
+void	ft_my_uslep(int time)
 {
-	struct timeval	times;
+	struct timeval	watch;
 	int				t_current;
 	int				t_exit;
 
-	t_exit = data->t_life * 1000;
-	gettimeofday(&times, NULL);
-	if (times.tv_usec < 100000)
-		times.tv_usec *= 10;
-	t_current = times.tv_usec;
-	t_exit += times.tv_usec;
+	t_exit = time * 1000;
+	gettimeofday(&watch, NULL);
+	if (watch.tv_usec < 100000)
+		watch.tv_usec *= 10;
+	t_current = watch.tv_usec;
+	t_exit += watch.tv_usec;
 	if (t_exit > 1000000)
-		t_current = 1000000 + times.tv_usec;
+		t_current = 1000000 + watch.tv_usec;
 	while (1)
 	{
-		gettimeofday(&times, NULL);
-		t_current = times.tv_usec;
+		gettimeofday(&watch, NULL);
+		t_current = watch.tv_usec;
 		if (t_exit > 1000000)
-			t_current = 1000000 + times.tv_usec;
+			t_current = 1000000 + watch.tv_usec;
 		if (t_current == t_exit)
 			return ;
 	}
@@ -45,13 +45,13 @@ void	ft_destroy_mutex(t_data *data, int i)
 	{
 		i = -1;
 		while (i++ < data->n_ph)
-			pthread_mutex_destroy(&data->philo[i]);
+			pthread_mutex_destroy(data->philo[i].right);
 	}
 	else
 	{
 		i++;
 		while (i-- != -1)
-			pthread_mutex_destroy(&data->philo[i]);
+			pthread_mutex_destroy(data->philo[i].right);
 	}
 }
 
@@ -80,32 +80,35 @@ int	ft_error_free(t_data *data, int flag, int i)
 
 void	ft_filling_struct_ph(t_data *data, int i)
 {
-	while (i++ < data->n_ph)
+	i = -1;
+	while (++i < data->n_ph)
 	{
 		data->philo[i].id = i;
 		data->philo[i].life = data->t_life;
 		data->philo[i].eat = data->t_eat;
-		data->philo[i].think = data->t_think;
+		data->philo[i].sleep = data->t_sleep;
+		data->philo[i].itr = &data->iter;
+		data->philo[i].mes = &data->mutex;
+		data->philo[i].timestamp = -1;
 	}
 }
 
 int	ft_memory_and_tool_allocation(t_data *data, int i)
 {
-	data->philo = malloc (sizeof(t_flow) * data->n_ph);
-	if (data->philo)
+	data->philo = (t_flow *) malloc (sizeof(t_flow) * data->n_ph);
+	if (data->philo == NULL)
 		return (ft_error_free(data, 3, -1));
 	data->th = malloc(sizeof(pthread_t) * data->n_ph);
-	if (data->philo)
+	if (data->th == NULL)
 		return (ft_error_free(data, 3, -1));
 	i = -1;
-	ft_filling_struct_ph(data, i);
 	while (i++ < data->n_ph)
 	{
 		if (pthread_mutex_init(&data->philo[i].fork, NULL))
 			return (ft_error_free(data, 4, i));
 	}
 	i = -1;
-	while (i++ < data->n_ph)
+	while (++i < data->n_ph)
 	{
 		data->philo[i].left = &data->philo[i].fork;
 		if ((i + 1) > (data->n_ph - 1))
@@ -115,5 +118,6 @@ int	ft_memory_and_tool_allocation(t_data *data, int i)
 	}
 	if (pthread_mutex_init(&data->mutex, NULL))
 		return (ft_error_free(data, 4, -2));
+	ft_filling_struct_ph(data, i);
 	return (0);
 }

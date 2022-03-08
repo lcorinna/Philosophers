@@ -6,7 +6,7 @@
 /*   By: lcorinna <lcorinna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 15:49:55 by lcorinna          #+#    #+#             */
-/*   Updated: 2022/03/07 18:45:40 by lcorinna         ###   ########.fr       */
+/*   Updated: 2022/03/08 18:26:05 by lcorinna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,14 @@ typedef struct s_flow
 	int				id;
 	int				life;
 	int				eat;
-	int				think;
+	int				sleep;
+	long long		timestamp;
+	long long		plus_time;
+	int				*itr;
 	pthread_mutex_t	fork;
 	pthread_mutex_t	*right;
 	pthread_mutex_t	*left;
+	pthread_mutex_t	*mes;
 }	t_flow;
 
 typedef struct s_data
@@ -35,7 +39,7 @@ typedef struct s_data
 	int				n_ph;
 	int				t_life;
 	int				t_eat;
-	int				t_think;
+	int				t_sleep;
 	int				iter;
 	t_flow			*philo;
 	pthread_t		*th;
@@ -45,9 +49,9 @@ typedef struct s_data
 int			ft_filling_data(t_data *data, char **argv);
 int			ft_dining_room(t_data *data, int i);
 
-int			ft_error(t_data *data, int flag, int i);
+int			ft_error_free(t_data *data, int flag, int i);
 int			ft_memory_and_tool_allocation(t_data *data, int i);
-void		ft_my_uslep(t_data *data);
+void		ft_my_uslep(int time);
 
 void		*ft_routine(void *argv);
 
