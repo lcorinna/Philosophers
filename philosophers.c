@@ -6,7 +6,7 @@
 /*   By: lcorinna <lcorinna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 14:04:29 by lcorinna          #+#    #+#             */
-/*   Updated: 2022/03/08 18:56:37 by lcorinna         ###   ########.fr       */
+/*   Updated: 2022/03/09 19:36:29 by lcorinna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,24 +34,54 @@ int	ft_filling_data(t_data *data, char **argv)
 	return (0);
 }
 
+void	ft_heart_monitor(t_data *data)
+{
+	int	i;
+
+	while (1)
+	{
+		i = 0;
+		while (i < data->n_ph)
+		{	
+			if (data->philo[i].hungry > data->t_life)
+			{
+				printf("last_eat %lld\n", data->philo[i].last_eat); //del
+				printf("%lld %d died\n", data->philo[i].plus_time, i + 1);
+				exit (1);
+			}
+			if (data->iter == 0)
+				return ;
+			i++;
+		}
+	}
+}
+
 int	ft_dining_room(t_data *data, int i)
 {
 	if (ft_memory_and_tool_allocation(data, i))
 		return (1);
-	printf("\n\nHEREHEREHEREHEREHEREHEREHEREHEREHEREHERE\n\n"); //del
-	i = -1;
-	while (++i < data->n_ph)
+	i = 0;
+	while (i < data->n_ph)
 	{
 		if (pthread_create(&data->th[i], NULL, ft_routine, &data->philo[i]))
 			return (ft_error_free(data, 5, -3));
-		printf("H1\n\n"); //del
+		i += 2;
+	}
+	i = 1;
+	usleep(500);
+	while (i < data->n_ph)
+	{
+		if (pthread_create(&data->th[i], NULL, ft_routine, &data->philo[i]))
+			return (ft_error_free(data, 5, -3));
+		i += 2;
 	}
 	i = -1;
 	while (++i < data->n_ph)
 	{
-		if (pthread_join(data->th[i], NULL))
+		if (pthread_detach(data->th[i]))
 			return (ft_error_free(data, 6, -3));
 	}
+	ft_heart_monitor(data);
 	return (0);
 }
 
@@ -74,9 +104,3 @@ int	main(int argc, char **argv)
 	// printf("data->iter %d\n", data.iter); //del
 	return (0);
 }
-
-// pthread_mutex_init(&data.mutex, NULL);
-// pthread_mutex_lock(&data.mutex); 
-// somebody
-// pthread_mutex_unlock(&data.mutex);
-// pthread_mutex_destroy(&data.mutex);

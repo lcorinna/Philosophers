@@ -6,7 +6,7 @@
 /*   By: lcorinna <lcorinna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 14:04:29 by lcorinna          #+#    #+#             */
-/*   Updated: 2022/03/08 19:15:23 by lcorinna         ###   ########.fr       */
+/*   Updated: 2022/03/09 18:37:47 by lcorinna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,9 @@ void	ft_my_uslep(int time)
 
 	t_exit = time * 1000;
 	gettimeofday(&watch, NULL);
-	if (watch.tv_usec < 100000)
-		watch.tv_usec *= 10;
+	// printf("%d\n", watch.tv_usec);
+	// if (watch.tv_usec < 100000)
+	// 	watch.tv_usec *= 10;
 	t_current = watch.tv_usec;
 	t_exit += watch.tv_usec;
 	if (t_exit > 1000000)
@@ -83,13 +84,15 @@ void	ft_filling_struct_ph(t_data *data, int i)
 	i = -1;
 	while (++i < data->n_ph)
 	{
-		data->philo[i].id = i;
+		data->philo[i].id = i + 1;
 		data->philo[i].life = data->t_life;
 		data->philo[i].eat = data->t_eat;
 		data->philo[i].sleep = data->t_sleep;
 		data->philo[i].itr = &data->iter;
 		data->philo[i].mes = &data->mutex;
 		data->philo[i].timestamp = -1;
+		data->philo[i].plus_time = 0;
+		data->philo[i].last_eat = 0;
 	}
 }
 

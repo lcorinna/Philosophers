@@ -6,7 +6,7 @@
 /*   By: lcorinna <lcorinna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 15:49:55 by lcorinna          #+#    #+#             */
-/*   Updated: 2022/03/08 18:26:05 by lcorinna         ###   ########.fr       */
+/*   Updated: 2022/03/09 19:36:11 by lcorinna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ typedef struct s_flow
 	int				life;
 	int				eat;
 	int				sleep;
+	int				hungry;
+	long long		last_eat;
 	long long		timestamp;
 	long long		plus_time;
 	int				*itr;
