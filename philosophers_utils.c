@@ -6,34 +6,33 @@
 /*   By: lcorinna <lcorinna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 14:04:29 by lcorinna          #+#    #+#             */
-/*   Updated: 2022/03/09 18:37:47 by lcorinna         ###   ########.fr       */
+/*   Updated: 2022/03/11 19:24:14 by lcorinna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	ft_my_uslep(int time)
+void	ft_my_uslep(long long time)
 {
 	struct timeval	watch;
-	int				t_current;
-	int				t_exit;
+	long long		t_exit;
+	long long		t_start;
 
-	t_exit = time * 1000;
+	// time *= 1000;
 	gettimeofday(&watch, NULL);
-	// printf("%d\n", watch.tv_usec);
-	// if (watch.tv_usec < 100000)
-	// 	watch.tv_usec *= 10;
-	t_current = watch.tv_usec;
-	t_exit += watch.tv_usec;
-	if (t_exit > 1000000)
-		t_current = 1000000 + watch.tv_usec;
+	t_start = watch.tv_sec * 1000 + watch.tv_usec / 1000;
+	// actual_time = pervij - t_start
+	// while (actual_time < time){
+	// 	pervij = slepok vremeni noviy;
+	// 	actual_time = pervij - t_start
+	// 	usleep(1);
+	// }
+	// printf("t_start %lld\n", t_start);
 	while (1)
 	{
 		gettimeofday(&watch, NULL);
-		t_current = watch.tv_usec;
-		if (t_exit > 1000000)
-			t_current = 1000000 + watch.tv_usec;
-		if (t_current == t_exit)
+		t_exit = watch.tv_sec * 1000 + watch.tv_usec / 1000;
+		if (t_exit == (t_start + time))
 			return ;
 	}
 }
@@ -88,10 +87,10 @@ void	ft_filling_struct_ph(t_data *data, int i)
 		data->philo[i].life = data->t_life;
 		data->philo[i].eat = data->t_eat;
 		data->philo[i].sleep = data->t_sleep;
-		data->philo[i].itr = &data->iter;
+		data->philo[i].itr = data->iter;
 		data->philo[i].mes = &data->mutex;
-		data->philo[i].timestamp = -1;
-		data->philo[i].plus_time = 0;
+		data->philo[i].zero_t = &data->zero_time;
+		data->philo[i].time = &data->timestamp;
 		data->philo[i].last_eat = 0;
 	}
 }
@@ -105,19 +104,19 @@ int	ft_memory_and_tool_allocation(t_data *data, int i)
 	if (data->th == NULL)
 		return (ft_error_free(data, 3, -1));
 	i = -1;
-	while (i++ < data->n_ph)
+	while (++i < data->n_ph)
 	{
 		if (pthread_mutex_init(&data->philo[i].fork, NULL))
 			return (ft_error_free(data, 4, i));
 	}
 	i = -1;
 	while (++i < data->n_ph)
-	{
+	{		
 		data->philo[i].left = &data->philo[i].fork;
-		if ((i + 1) > (data->n_ph - 1))
-			data->philo[i].right = &data->philo[0].fork;
-		else
+		if ((i + 1) != data->n_ph)
 			data->philo[i].right = &data->philo[i + 1].fork;
+		else
+			data->philo[i].right = &data->philo[0].fork;
 	}
 	if (pthread_mutex_init(&data->mutex, NULL))
 		return (ft_error_free(data, 4, -2));
