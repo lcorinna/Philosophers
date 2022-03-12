@@ -6,7 +6,7 @@
 /*   By: lcorinna <lcorinna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 14:04:29 by lcorinna          #+#    #+#             */
-/*   Updated: 2022/03/11 19:43:32 by lcorinna         ###   ########.fr       */
+/*   Updated: 2022/03/12 19:39:50 by lcorinna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,12 @@ int	ft_filling_data(t_data *data, char **argv)
 	return (0);
 }
 
-void	ft_heart_monitor(t_data *data, int i)
+int	ft_heart_monitor(t_data *data, int i)
 {
 	int	j;
 
 	if (data->n_ph == 1)
-	{
-		usleep(data->t_eat * 1000 + data->t_sleep * 1000);
-		printf("%d %d died\n", data->t_life + 3, 1);
-		exit(1);
-	}
+		return (ft_exception(data));
 	while (1)
 	{
 		i = -1;
@@ -55,16 +51,16 @@ void	ft_heart_monitor(t_data *data, int i)
 			if (data->philo[i].death > data->t_life)
 			{
 				pthread_mutex_lock(&data->mutex);
-				printf("time died %d\n", data->philo[i].death); //del
 				printf("%lld %d died\n", data->timestamp, i + 1);
-				exit(1);
+				return (0);
 			}
 			if (data->philo[i].itr == 0)
 				j++;
 		}
 		if (j == data->n_ph)
-			exit(0); //del
+			return (0);
 	}
+	return (0);
 }
 
 void	ft_time_zero(t_data *data)
@@ -86,7 +82,7 @@ int	ft_dining_room(t_data *data, int i)
 			return (ft_error_free(data, 5, -3));
 		i += 2;
 	}
-	usleep(700);
+	usleep(300);
 	i = 1;
 	while (i < data->n_ph)
 	{
@@ -108,6 +104,8 @@ int	main(int argc, char **argv)
 {
 	t_data	data;
 
+	data.philo = NULL;
+	data.th = NULL;
 	if (argc < 5 || argc > 6)
 		return (ft_error_free(&data, 1, -1));
 	if (ft_filling_data(&data, argv))
@@ -115,7 +113,7 @@ int	main(int argc, char **argv)
 	argc = 0;
 	if (ft_dining_room(&data, argc))
 		return (1);
-	// ft_error_free(&data, 0, -3); //is this the end of my program?
-	// ft_my_uslep(&data);
+	ft_error_free(&data, 0, -3);
+	exit(0);
 	return (0);
 }

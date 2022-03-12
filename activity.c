@@ -6,7 +6,7 @@
 /*   By: lcorinna <lcorinna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 16:28:02 by lcorinna          #+#    #+#             */
-/*   Updated: 2022/03/11 19:29:16 by lcorinna         ###   ########.fr       */
+/*   Updated: 2022/03/12 19:34:09 by lcorinna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,12 @@ void	ft_sleep(t_flow *ph)
 	pthread_mutex_lock(ph->mes);
 	printf("%lld %d is sleeping\n", *ph->time, ph->id);
 	pthread_mutex_unlock(ph->mes);
-	ft_my_uslep((long long)ph->sleep);
-	// usleep(ph->sleep * 1000);
+	usleep((ph->sleep - 5) * 1000);
 }
 
 void	ft_eat(t_flow *ph)
 {
 	pthread_mutex_lock(ph->left);
-	ph->death = *ph->time - ph->last_eat;
-	ph->last_eat = *ph->time;
-	// printf("ph->death ____%d\n\n", ph->death); //del
 	pthread_mutex_lock(ph->mes);
 	printf("%lld %d has taken a fork\n", *ph->time, ph->id);
 	pthread_mutex_unlock(ph->mes);
@@ -52,8 +48,10 @@ void	ft_eat(t_flow *ph)
 	pthread_mutex_lock(ph->mes);
 	printf("%lld %d is eating\n", *ph->time, ph->id);
 	pthread_mutex_unlock(ph->mes);
-	// usleep(ph->eat * 1000);
-	ft_my_uslep((long long)ph->eat);
+	usleep((ph->eat - 3) * 1000);
+	ph->death = *ph->time - ph->last_eat;
+	printf("num %d ph->death %d\n", ph->id, ph->death); //del
+	ph->last_eat = *ph->time;
 	pthread_mutex_unlock(ph->right);
 	pthread_mutex_unlock(ph->left);
 }

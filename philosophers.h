@@ -6,7 +6,7 @@
 /*   By: lcorinna <lcorinna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 15:49:55 by lcorinna          #+#    #+#             */
-/*   Updated: 2022/03/11 18:48:46 by lcorinna         ###   ########.fr       */
+/*   Updated: 2022/03/12 18:36:32 by lcorinna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ typedef struct s_data
 
 int			ft_filling_data(t_data *data, char **argv);
 int			ft_dining_room(t_data *data, int i);
-void		ft_heart_monitor(t_data *data, int i);
+int			ft_heart_monitor(t_data *data, int i);
 void		ft_time_zero(t_data *data);
 
-void		ft_my_uslep(long long time);
+int			ft_exception(t_data *data);
 void		ft_destroy_mutex(t_data *data, int i);
 int			ft_error_free(t_data *data, int flag, int i);
 void		ft_filling_struct_ph(t_data *data, int i);

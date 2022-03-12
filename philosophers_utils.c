@@ -6,36 +6,11 @@
 /*   By: lcorinna <lcorinna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 14:04:29 by lcorinna          #+#    #+#             */
-/*   Updated: 2022/03/11 19:24:14 by lcorinna         ###   ########.fr       */
+/*   Updated: 2022/03/12 19:29:30 by lcorinna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
-void	ft_my_uslep(long long time)
-{
-	struct timeval	watch;
-	long long		t_exit;
-	long long		t_start;
-
-	// time *= 1000;
-	gettimeofday(&watch, NULL);
-	t_start = watch.tv_sec * 1000 + watch.tv_usec / 1000;
-	// actual_time = pervij - t_start
-	// while (actual_time < time){
-	// 	pervij = slepok vremeni noviy;
-	// 	actual_time = pervij - t_start
-	// 	usleep(1);
-	// }
-	// printf("t_start %lld\n", t_start);
-	while (1)
-	{
-		gettimeofday(&watch, NULL);
-		t_exit = watch.tv_sec * 1000 + watch.tv_usec / 1000;
-		if (t_exit == (t_start + time))
-			return ;
-	}
-}
 
 void	ft_destroy_mutex(t_data *data, int i)
 {
@@ -44,14 +19,13 @@ void	ft_destroy_mutex(t_data *data, int i)
 	if (i < -1)
 	{
 		i = -1;
-		while (i++ < data->n_ph)
-			pthread_mutex_destroy(data->philo[i].right);
+		while (++i < data->n_ph)
+			pthread_mutex_destroy(&data->philo[i].fork);
 	}
 	else
 	{
-		i++;
-		while (i-- != -1)
-			pthread_mutex_destroy(data->philo[i].right);
+		while (--i != -1)
+			pthread_mutex_destroy(&data->philo[i].fork);
 	}
 }
 
@@ -68,7 +42,7 @@ int	ft_error_free(t_data *data, int flag, int i)
 	else if (flag == 5)
 		ft_putstr_fd("Don't work pthread_create\n", 2);
 	else if (flag == 6)
-		ft_putstr_fd("Don't work pthread_join\n", 2);
+		ft_putstr_fd("Don't work pthread_detach\n", 2);
 	if (data->philo != NULL)
 		free(data->philo);
 	if (data->th != NULL)
@@ -93,6 +67,13 @@ void	ft_filling_struct_ph(t_data *data, int i)
 		data->philo[i].time = &data->timestamp;
 		data->philo[i].last_eat = 0;
 	}
+}
+
+int	ft_exception(t_data *data)
+{
+	usleep(data->t_eat * 1000 + data->t_sleep * 1000);
+	printf("%d %d died\n", data->t_life + 3, 1);
+	return (1);
 }
 
 int	ft_memory_and_tool_allocation(t_data *data, int i)
