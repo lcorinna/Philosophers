@@ -6,7 +6,7 @@
 /*   By: lcorinna <lcorinna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 14:04:29 by lcorinna          #+#    #+#             */
-/*   Updated: 2022/03/12 19:29:30 by lcorinna         ###   ########.fr       */
+/*   Updated: 2022/03/13 13:48:17 by lcorinna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	ft_destroy_mutex(t_data *data, int i)
 		while (++i < data->n_ph)
 			pthread_mutex_destroy(&data->philo[i].fork);
 	}
-	else
+	else if (i >= 0)
 	{
 		while (--i != -1)
 			pthread_mutex_destroy(&data->philo[i].fork);
@@ -31,6 +31,7 @@ void	ft_destroy_mutex(t_data *data, int i)
 
 int	ft_error_free(t_data *data, int flag, int i)
 {
+	usleep(300);
 	if (flag == 1)
 		ft_putstr_fd("The number of arguments should be 4 or 5\n", 2);
 	else if (flag == 2)
@@ -71,6 +72,7 @@ void	ft_filling_struct_ph(t_data *data, int i)
 
 int	ft_exception(t_data *data)
 {
+	pthread_mutex_lock(&data->mutex);
 	usleep(data->t_eat * 1000 + data->t_sleep * 1000);
 	printf("%d %d died\n", data->t_life + 3, 1);
 	return (1);

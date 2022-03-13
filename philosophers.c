@@ -6,7 +6,7 @@
 /*   By: lcorinna <lcorinna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 14:04:29 by lcorinna          #+#    #+#             */
-/*   Updated: 2022/03/12 19:39:50 by lcorinna         ###   ########.fr       */
+/*   Updated: 2022/03/13 18:04:49 by lcorinna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	ft_filling_data(t_data *data, char **argv)
 {
 	data->n_ph = ft_atoi_ph(argv[1]);
-	if (data->n_ph > 200)
+	if (data->n_ph == 2147483647)
 		return (1);
 	data->t_life = ft_atoi_ph(argv[2]);
 	if (data->t_life == 2147483647)
@@ -48,11 +48,12 @@ int	ft_heart_monitor(t_data *data, int i)
 		while (++i < data->n_ph)
 		{
 			ft_time_passed(&data->philo[i]);
+			data->philo->death = *data->philo->time - data->philo->last_eat;
 			if (data->philo[i].death > data->t_life)
 			{
 				pthread_mutex_lock(&data->mutex);
 				printf("%lld %d died\n", data->timestamp, i + 1);
-				return (0);
+				return (1);
 			}
 			if (data->philo[i].itr == 0)
 				j++;
@@ -96,7 +97,6 @@ int	ft_dining_room(t_data *data, int i)
 		if (pthread_detach(data->th[i]))
 			return (ft_error_free(data, 6, -3));
 	}
-	ft_heart_monitor(data, i);
 	return (0);
 }
 
@@ -113,7 +113,7 @@ int	main(int argc, char **argv)
 	argc = 0;
 	if (ft_dining_room(&data, argc))
 		return (1);
+	ft_heart_monitor(&data, argc);
 	ft_error_free(&data, 0, -3);
-	exit(0);
 	return (0);
 }

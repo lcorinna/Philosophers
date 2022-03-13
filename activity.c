@@ -6,7 +6,7 @@
 /*   By: lcorinna <lcorinna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 16:28:02 by lcorinna          #+#    #+#             */
-/*   Updated: 2022/03/12 19:34:09 by lcorinna         ###   ########.fr       */
+/*   Updated: 2022/03/13 12:38:25 by lcorinna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,6 @@ void	ft_eat(t_flow *ph)
 	printf("%lld %d is eating\n", *ph->time, ph->id);
 	pthread_mutex_unlock(ph->mes);
 	usleep((ph->eat - 3) * 1000);
-	ph->death = *ph->time - ph->last_eat;
-	printf("num %d ph->death %d\n", ph->id, ph->death); //del
 	ph->last_eat = *ph->time;
 	pthread_mutex_unlock(ph->right);
 	pthread_mutex_unlock(ph->left);
